@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Break Room — Pornpawee Manyuen</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Break Room palette — from the actual app */
+      --bg:         #edeade;
+      --bg2:        #f5f2e8;
+      --bg3:        #e4e0d0;
+      --border:     #d4ccb4;
+      --border2:    #b8ae94;
+      --orange:     #e8974a;
+      --orange-dim: #c47830;
+      --orange-lt:  #f4b878;
+      --orange-bg:  rgba(232,151,74,0.12);
+      --sage:       #7a8c5a;
+      --sage-dim:   #5c6e40;
+      --sage-lt:    #9aac78;
+      --sage-bg:    rgba(122,140,90,0.12);
+      --lavender:   #a89ec8;
+      --lav-dim:    #8878b0;
+      --lav-bg:     rgba(168,158,200,0.10);
+      --mint:       #78b898;
+      --mint-dim:   #549878;
+      --mint-bg:    rgba(120,184,152,0.10);
+      --peach-dim:  #c47848;
+      --pink:       #f4a0cc;   /* smash it tile — hot pink */
+      --pink-dim:   #d070a8;
+      --pink-bg:    rgba(244,160,204,0.12);
+      --yellow:     #f4e060;   /* vent wall tile — yellow */
+      --yel-dim:    #c4b030;
+      --ink:        #2a2418;
+      --muted:      #7a6e58;
+      --muted2:     #b0a488;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+
+    body {
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      background: var(--bg);
+      color: var(--ink);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* pixel dot grid background */
+    body::before {
+      content:''; position:fixed; inset:0;
+      background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
+      background-size: 24px 24px;
+      opacity:.5; pointer-events:none; z-index:0;
+    }
+
+    /* custom cursor — pixel cross */
+    #cur {
+      position:fixed; pointer-events:none; z-index:9999;
+      width:12px; height:12px;
+      transform:translate(-6px,-6px);
+    }
+    #cur::before, #cur::after {
+      content:''; position:absolute; background:var(--orange-dim);
+    }
+    #cur::before { width:2px; height:12px; left:5px; top:0; }
+    #cur::after  { width:12px; height:2px; left:0; top:5px; }
+
+    /* ── NAV ── */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:200;
+      display:flex; justify-content:space-between; align-items:center;
+      padding:14px 48px;
+      background:rgba(237,234,222,.97);
+      backdrop-filter:blur(8px);
+      border-bottom:2px solid var(--border);
+      box-shadow: 0 2px 0 var(--border2);
+    }
+    .nav-logo {
+      font-family:'Press Start 2P', monospace;
+      font-size:9px; color:var(--orange); text-decoration:none; letter-spacing:.02em;
+    }
+    .nav-logo span { color:var(--muted2); }
+    .nav-right { display:flex; align-items:center; gap:32px; }
+    .nav-back {
+      font-size:10px; color:var(--muted); text-decoration:none;
+      letter-spacing:.08em; text-transform:uppercase; transition:color .2s;
+      font-family:'JetBrains Mono', monospace;
+    }
+    .nav-back:hover { color:var(--orange); }
+    .nav-links { display:flex; gap:24px; }
+    .nav-links a {
+      font-size:10px; color:var(--muted); text-decoration:none;
+      letter-spacing:.08em; text-transform:uppercase; transition:color .2s;
+    }
+    .nav-links a:hover { color:var(--orange); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height:100vh;
+      display:flex; flex-direction:column; justify-content:center;
+      padding:120px 48px 80px;
+      position:relative; overflow:hidden;
+      border-bottom:2px solid var(--border);
+    }
+
+    /* floating pixel decorations */
+    .pixel-deco {
+      position:absolute; pointer-events:none; z-index:1;
+      font-family:'Press Start 2P', monospace;
+      animation:float-pixel 4s ease-in-out infinite;
+    }
+    .pd-1 { top:15%; right:8%;  font-size:28px; animation-delay:0s;   color:var(--orange-lt);     opacity:.6; }
+    .pd-2 { top:35%; right:18%; font-size:16px; animation-delay:.8s;  color:var(--lavender); opacity:.5; }
+    .pd-3 { top:60%; right:6%;  font-size:22px; animation-delay:1.6s; color:var(--mint);     opacity:.5; }
+    .pd-4 { top:20%; right:28%; font-size:12px; animation-delay:2.4s; color:var(--yellow);   opacity:.6; }
+    .pd-5 { top:75%; right:22%; font-size:18px; animation-delay:1.2s; color:var(--peach);    opacity:.5; }
+    @keyframes float-pixel {
+      0%,100%{ transform:translateY(0) rotate(0deg); }
+      33%     { transform:translateY(-10px) rotate(3deg); }
+      66%     { transform:translateY(4px) rotate(-2deg); }
+    }
+
+    .hero-breadcrumb {
+      font-size:10px; color:var(--muted2); letter-spacing:.1em;
+      margin-bottom:20px; position:relative; z-index:2;
+    }
+    .hero-breadcrumb a { color:var(--muted); text-decoration:none; transition:color .2s; }
+    .hero-breadcrumb a:hover { color:var(--orange); }
+    .hero-breadcrumb .sep { margin:0 8px; }
+
+    .hero-tags { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px; position:relative; z-index:2; }
+    .hero-tag {
+      font-size:9px; letter-spacing:.08em; text-transform:uppercase;
+      padding:5px 10px;
+      border:2px solid var(--border2); color:var(--muted);
+      background:var(--bg2);
+      box-shadow:2px 2px 0 var(--border2);
+      transition:all .15s;
+    }
+    .hero-tag:hover { transform:translate(-1px,-1px); box-shadow:3px 3px 0 var(--border2); }
+    .hero-tag.orange { border-color:var(--orange-dim); color:var(--orange-dim); box-shadow:2px 2px 0 var(--orange-dim); background:var(--orange-bg); }
+    .hero-tag.lav    { border-color:var(--lav-dim);  color:var(--lav-dim);  box-shadow:2px 2px 0 var(--lav-dim);  background:var(--lav-bg); }
+    .hero-tag.sage   { border-color:var(--sage-dim); color:var(--sage-dim); box-shadow:2px 2px 0 var(--sage-dim); background:var(--sage-bg); }
+
+    .hero-eyebrow {
+      font-family:'Press Start 2P', monospace;
+      font-size:9px; color:var(--orange); letter-spacing:.08em;
+      margin-bottom:16px; position:relative; z-index:2;
+    }
+
+    .hero-title {
+      font-family:'Press Start 2P', monospace;
+      font-size:clamp(24px,4.5vw,52px);
+      color:var(--ink); line-height:1.4;
+      margin-bottom:24px; position:relative; z-index:2;
+      text-shadow: 4px 4px 0 var(--border);
+    }
+    .hero-title .orange { color:var(--orange); text-shadow:4px 4px 0 var(--orange-dim); }
+
+    .hero-subtitle {
+      font-size:13px; color:var(--muted); letter-spacing:.03em;
+      margin-bottom:40px; position:relative; z-index:2;
+      font-weight:300; max-width:520px; line-height:1.8;
+    }
+    .hero-subtitle .hl { color:var(--ink); font-weight:500; }
+
+    .hero-meta {
+      display:grid; grid-template-columns:repeat(4,1fr); gap:2px;
+      max-width:580px; position:relative; z-index:2; margin-bottom:48px;
+    }
+    .meta-cell {
+      background:var(--bg2); padding:14px 16px;
+      border:2px solid var(--border);
+      box-shadow:3px 3px 0 var(--border2);
+      transition:all .15s;
+    }
+    .meta-cell:hover { transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--border2); }
+    .meta-lbl { font-size:8px; color:var(--muted2); letter-spacing:.12em; text-transform:uppercase; margin-bottom:6px; }
+    .meta-v { font-size:11px; color:var(--ink); font-weight:500; }
+    .meta-v.orange { color:var(--orange); }
+    .meta-v.lav  { color:var(--lav-dim); }
+    .meta-v.mint { color:var(--sage); }
+
+    .hero-cta {
+      display:inline-flex; align-items:center; gap:12px;
+      background:var(--orange-dim); color:#fff;
+      text-decoration:none; font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+      padding:14px 28px;
+      border:2px solid var(--orange);
+      box-shadow:4px 4px 0 var(--orange-dim);
+      transition:all .15s; position:relative; z-index:2;
+    }
+    .hero-cta:hover { transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--orange-dim); }
+    .hero-cta:active { transform:translate(2px,2px); box-shadow:2px 2px 0 var(--orange-dim); }
+
+    /* ── SECTIONS ── */
+    section { padding:80px 48px; position:relative; z-index:1; }
+
+    .sec-head {
+      display:flex; align-items:center; gap:12px;
+      margin-bottom:44px;
+    }
+    .sec-pixel-label {
+      font-family:'Press Start 2P', monospace;
+      font-size:8px; color:var(--orange); letter-spacing:.04em;
+    }
+    .sec-title {
+      font-size:11px; color:var(--muted); letter-spacing:.1em; text-transform:uppercase;
+    }
+    .sec-head-line { flex:1; height:1px; background:var(--border); }
+
+    /* pixel card base */
+    .px-card {
+      background:var(--bg2);
+      border:2px solid var(--border);
+      box-shadow:4px 4px 0 var(--border2);
+      padding:24px;
+      transition:all .15s;
+    }
+    .px-card:hover { transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--border2); }
+    .px-card.pink  { border-color:var(--orange); box-shadow:4px 4px 0 var(--orange); }
+    .px-card.pink:hover { box-shadow:6px 6px 0 var(--orange); }
+    .px-card.lav   { border-color:var(--lav-dim); box-shadow:4px 4px 0 var(--lav-dim); }
+    .px-card.lav:hover { box-shadow:6px 6px 0 var(--lav-dim); }
+    .px-card.mint  { border-color:var(--sage); box-shadow:4px 4px 0 var(--sage-dim); }
+    .px-card.mint:hover { box-shadow:6px 6px 0 var(--sage-dim); }
+
+    /* ── CONTEXT ── */
+    #context { background:var(--bg2); border-bottom:2px solid var(--border); }
+    .context-grid { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:start; }
+    .context-body { font-size:13px; line-height:1.9; color:var(--muted); font-weight:300; margin-bottom:16px; }
+    .context-body .hl { color:var(--ink); font-weight:500; }
+    .context-body .orange { color:var(--orange); font-weight:500; }
+
+    /* competition cards */
+    .comp-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .comp-card { padding:18px; border:2px solid var(--border); background:var(--bg); box-shadow:3px 3px 0 var(--border2); }
+    .comp-name { font-size:11px; color:var(--ink); font-weight:700; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+    .comp-tag  { font-size:8px; padding:2px 6px; border:1px solid var(--border2); color:var(--muted2); }
+    .comp-issue { font-size:11px; color:var(--muted); line-height:1.6; font-weight:300; }
+    .comp-issue .x { color:var(--orange); margin-right:6px; }
+
+    /* ── PROBLEM ── */
+    #problem { border-bottom:2px solid var(--border); }
+    .insight-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:16px; }
+    .insight-card {
+      padding:22px; border:2px solid var(--border);
+      background:var(--bg2); box-shadow:3px 3px 0 var(--border2);
+      transition:all .15s;
+    }
+    .insight-card:hover { transform:translate(-1px,-1px); box-shadow:4px 4px 0 var(--border2); }
+    .insight-icon { font-size:20px; margin-bottom:10px; display:block; }
+    .insight-label { font-size:8px; font-family:'Press Start 2P',monospace; color:var(--muted2); margin-bottom:8px; letter-spacing:.04em; }
+    .insight-text { font-size:12px; line-height:1.7; color:var(--muted); font-weight:300; }
+    .insight-text .hl { color:var(--ink); }
+
+    /* ── SOLUTION / FEATURES ── */
+    #solution { background:var(--bg2); border-bottom:2px solid var(--border); }
+    .features { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .feature-card {
+      padding:28px 24px;
+      border:2px solid var(--border); background:var(--bg);
+      box-shadow:4px 4px 0 var(--border2);
+      position:relative; overflow:hidden;
+      transition:all .15s;
+    }
+    .feature-card:hover { transform:translate(-2px,-2px); }
+    .feature-card.f-orange { border-color:var(--orange-dim); box-shadow:4px 4px 0 var(--orange-dim); }
+    .feature-card.f-lav   { border-color:var(--lav-dim);  box-shadow:4px 4px 0 var(--lav-dim); }
+    .feature-card.f-sage  { border-color:var(--sage-dim); box-shadow:4px 4px 0 var(--sage-dim); }
+    .feature-card.f-orange:hover { box-shadow:6px 6px 0 var(--orange-dim); }
+    .feature-card.f-lav:hover  { box-shadow:6px 6px 0 var(--lav-dim); }
+    .feature-card.f-sage:hover { box-shadow:6px 6px 0 var(--sage-dim); }
+
+    .feat-pixel-num {
+      font-family:'Press Start 2P', monospace;
+      font-size:8px; margin-bottom:12px; letter-spacing:.04em;
+    }
+    .f-orange .feat-pixel-num { color:var(--orange); }
+    .f-lav  .feat-pixel-num  { color:var(--lav-dim); }
+    .f-sage  .feat-pixel-num  { color:var(--sage-dim); }
+
+    .feat-icon { font-size:28px; margin-bottom:12px; display:block; }
+    .feat-title { font-size:14px; color:var(--ink); margin-bottom:8px; font-weight:700; }
+    .feat-desc { font-size:12px; line-height:1.7; color:var(--muted); font-weight:300; }
+    .feat-badge {
+      display:inline-block; margin-top:14px;
+      font-size:9px; padding:4px 10px;
+      border:2px solid; letter-spacing:.06em; text-transform:uppercase;
+    }
+    .f-orange .feat-badge { border-color:var(--orange-dim); color:var(--orange-dim); background:var(--orange-bg); }
+    .f-lav  .feat-badge { border-color:var(--lav-dim);  color:var(--lav-dim);  background:var(--lav-bg); }
+    .f-sage  .feat-badge { border-color:var(--sage-dim); color:var(--sage-dim); background:var(--sage-bg); }
+
+    /* ── DESIGN PROCESS ── */
+    #process { border-bottom:2px solid var(--border); }
+    .process-steps { display:flex; flex-direction:column; gap:2px; }
+    .proc-step {
+      display:grid; grid-template-columns:160px 1fr;
+      border:2px solid var(--border); background:var(--bg2);
+      transition:all .15s;
+    }
+    .proc-step:hover { border-color:var(--orange); }
+    .proc-left {
+      padding:24px 20px;
+      border-right:2px solid var(--border);
+      background:var(--bg3);
+    }
+    .proc-step:hover .proc-left { border-right-color:var(--orange); }
+    .proc-num { font-family:'Press Start 2P',monospace; font-size:8px; color:var(--muted2); margin-bottom:8px; }
+    .proc-time { font-size:10px; color:var(--orange); font-weight:700; margin-bottom:4px; }
+    .proc-phase { font-size:10px; color:var(--muted); letter-spacing:.06em; text-transform:uppercase; }
+    .proc-right { padding:24px 28px; }
+    .proc-title { font-size:14px; color:var(--ink); font-weight:700; margin-bottom:8px; }
+    .proc-body { font-size:12px; line-height:1.8; color:var(--muted); font-weight:300; }
+    .proc-body .hl { color:var(--ink); font-weight:500; }
+    .proc-body .orange { color:var(--orange); }
+    .proc-chips { display:flex; gap:6px; flex-wrap:wrap; margin-top:12px; }
+    .proc-chip {
+      font-size:9px; padding:3px 8px;
+      border:1px solid var(--border2); color:var(--muted);
+      background:var(--bg); transition:all .15s;
+    }
+    .proc-chip:hover { border-color:var(--orange); color:var(--orange); }
+
+    /* ── DESIGN SYSTEM ── */
+    #design-system { background:var(--bg2); border-bottom:2px solid var(--border); }
+    .ds-section-title {
+      font-family:'Press Start 2P', monospace;
+      font-size:10px; color:var(--sage); margin-bottom:32px;
+      padding-bottom:12px; border-bottom:2px solid var(--border);
+      letter-spacing:.04em;
+    }
+
+    /* colour swatches */
+    .swatches { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:48px; }
+    .swatch { flex:1; min-width:120px; }
+    .swatch-block {
+      height:80px;
+      border:2px solid var(--border2);
+      box-shadow:4px 4px 0 var(--border2);
+      margin-bottom:10px;
+      position:relative; overflow:hidden;
+    }
+    .swatch-block::after {
+      content:''; position:absolute; inset:0;
+      background:repeating-linear-gradient(
+        45deg, transparent, transparent 4px,
+        rgba(255,255,255,.15) 4px, rgba(255,255,255,.15) 5px
+      );
+    }
+    .swatch-name { font-size:10px; color:var(--ink); font-weight:700; margin-bottom:2px; }
+    .swatch-hex  { font-size:10px; color:var(--muted); }
+    .swatch-use  { font-size:9px;  color:var(--muted2); margin-top:4px; }
+
+    /* type specimens */
+    .type-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:48px; }
+    .type-specimen {
+      padding:24px; border:2px solid var(--border); background:var(--bg);
+      box-shadow:4px 4px 0 var(--border2);
+    }
+    .type-label { font-size:9px; color:var(--muted2); letter-spacing:.1em; text-transform:uppercase; margin-bottom:12px; }
+    .type-sample-pixel { font-family:'Press Start 2P', monospace; line-height:1.6; }
+    .type-sample-mono  { font-family:'JetBrains Mono', monospace; line-height:1.7; }
+    .type-meta { font-size:9px; color:var(--muted2); margin-top:10px; border-top:1px solid var(--border); padding-top:10px; }
+
+    /* component showcase */
+    .comp-showcase { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:48px; }
+    .comp-demo {
+      padding:24px; border:2px solid var(--border); background:var(--bg);
+      box-shadow:4px 4px 0 var(--border2);
+    }
+    .comp-demo-label { font-size:9px; color:var(--muted2); letter-spacing:.1em; text-transform:uppercase; margin-bottom:16px; }
+
+    /* demo buttons */
+    .demo-btn {
+      display:inline-block; padding:10px 18px;
+      border:2px solid; font-size:10px; letter-spacing:.08em; text-transform:uppercase;
+      cursor:default; transition:all .15s; margin-bottom:8px; width:100%; text-align:center;
+    }
+    .demo-btn.primary {
+      background:var(--orange-dim); border-color:var(--orange); color:#fff;
+      box-shadow:3px 3px 0 var(--orange-dim);
+    }
+    .demo-btn.secondary {
+      background:transparent; border-color:var(--lav-dim); color:var(--lav-dim);
+      box-shadow:3px 3px 0 var(--lav-dim);
+    }
+    .demo-btn.ghost {
+      background:transparent; border-color:var(--border2); color:var(--muted);
+      box-shadow:3px 3px 0 var(--border2);
+    }
+    .demo-btn:hover { transform:translate(-1px,-1px); }
+
+    /* demo input */
+    .demo-input {
+      width:100%; padding:10px 12px;
+      border:2px solid var(--border2); background:var(--bg2);
+      font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink);
+      box-shadow:3px 3px 0 var(--border2);
+      outline:none; margin-bottom:8px;
+    }
+    .demo-input:focus { border-color:var(--orange); box-shadow:3px 3px 0 var(--orange); }
+
+    /* demo stress button */
+    .demo-stress {
+      width:80px; height:80px; border-radius:50%;
+      background:var(--orange-lt); border:4px solid var(--orange);
+      box-shadow:0 6px 0 var(--orange), 4px 4px 0 var(--orange);
+      display:flex; align-items:center; justify-content:center;
+      font-size:24px; cursor:default; transition:all .1s; margin:8px auto;
+    }
+    .demo-stress:hover { transform:translateY(3px); box-shadow:0 3px 0 var(--orange), 2px 2px 0 var(--orange); }
+
+    /* demo vent post */
+    .demo-post {
+      padding:12px; border:2px solid var(--border);
+      background:var(--bg2); box-shadow:3px 3px 0 var(--border2);
+      font-size:11px; color:var(--muted); line-height:1.6;
+      margin-bottom:8px;
+    }
+    .demo-post-meta { font-size:9px; color:var(--muted2); margin-bottom:6px; }
+
+    /* spacing tokens */
+    .spacing-row { display:flex; gap:16px; align-items:flex-end; margin-bottom:48px; }
+    .spacing-item { text-align:center; }
+    .spacing-block { background:var(--orange-bg); border:1px solid var(--orange); width:40px; margin:0 auto 8px; }
+    .spacing-label { font-size:9px; color:var(--muted); }
+    .spacing-value { font-size:9px; color:var(--orange); font-weight:700; }
+
+    /* ── REFLECTION ── */
+    #reflection { border-bottom:2px solid var(--border); }
+    .refl-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .refl-card { padding:24px; border:2px solid var(--border); background:var(--bg2); box-shadow:4px 4px 0 var(--border2); }
+    .refl-card.good { border-color:var(--sage-dim); box-shadow:4px 4px 0 var(--sage-dim); }
+    .refl-card.warn { border-color:var(--orange-dim); box-shadow:4px 4px 0 var(--orange-dim); }
+    .refl-head { font-family:'Press Start 2P',monospace; font-size:8px; margin-bottom:16px; letter-spacing:.04em; }
+    .refl-card.good .refl-head { color:var(--sage-dim); }
+    .refl-card.warn .refl-head { color:var(--orange-dim); }
+    .refl-item { display:flex; gap:10px; margin-bottom:12px; font-size:12px; line-height:1.7; color:var(--muted); font-weight:300; align-items:flex-start; }
+    .refl-bullet { flex-shrink:0; font-size:10px; padding-top:2px; }
+    .refl-card.good .refl-bullet { color:var(--sage-dim); }
+    .refl-card.warn .refl-bullet { color:var(--orange-dim); }
+    .refl-item .hl { color:var(--ink); font-weight:500; }
+
+    /* ── CONTACT ── */
+    #contact {
+      text-align:center; padding:96px 48px;
+      position:relative; overflow:hidden;
+    }
+    .contact-pixel-art {
+      font-family:'Press Start 2P',monospace;
+      font-size:11px; color:var(--border); white-space:pre;
+      line-height:1.5; margin-bottom:32px;
+      animation:float-pixel 5s ease-in-out infinite;
+    }
+    .contact-title {
+      font-family:'Press Start 2P',monospace;
+      font-size:clamp(14px,2.5vw,22px);
+      color:var(--ink); margin-bottom:12px; line-height:1.5;
+    }
+    .contact-title span { color:var(--orange); }
+    .contact-sub { font-size:12px; color:var(--muted); margin-bottom:32px; }
+    .contact-email {
+      display:inline-flex; align-items:center; gap:10px;
+      background:var(--ink); color:var(--bg2);
+      text-decoration:none; font-size:12px; letter-spacing:.08em;
+      padding:14px 28px;
+      border:2px solid var(--ink);
+      box-shadow:4px 4px 0 var(--muted);
+      transition:all .15s;
+    }
+    .contact-email:hover { transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--orange-dim); }
+
+    /* ── FOOTER ── */
+    footer {
+      padding:24px 48px; border-top:2px solid var(--border);
+      display:flex; justify-content:space-between; align-items:center;
+      font-size:10px; color:var(--muted); background:var(--bg3);
+      box-shadow:inset 0 2px 0 var(--border2);
+    }
+    .foot-links { display:flex; gap:20px; }
+    .foot-links a { color:var(--muted); text-decoration:none; letter-spacing:.08em; text-transform:uppercase; transition:color .2s; }
+    .foot-links a:hover { color:var(--orange); }
+
+
+    /* ── FEATURE SHOWCASE ── */
+    .feature-showcase {
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:48px; align-items:start; margin-bottom:0;
+    }
+    .feature-showcase-flip { direction:rtl; }
+    .feature-showcase-flip > * { direction:ltr; }
+
+    .feature-info { padding:8px 0; }
+    .feat-details { margin:16px 0; border:2px solid var(--border); background:var(--bg3); }
+    .feat-detail-row {
+      display:grid; grid-template-columns:120px 1fr;
+      gap:0; border-bottom:1px solid var(--border); padding:10px 14px;
+      font-size:11px;
+    }
+    .feat-detail-row:last-child { border-bottom:none; }
+    .fdr-label { color:var(--muted2); letter-spacing:.06em; text-transform:uppercase; font-size:9px; padding-top:1px; }
+    .fdr-val   { color:var(--muted); font-weight:300; }
+
+    .feature-divider {
+      text-align:center; font-size:10px; color:var(--border2);
+      letter-spacing:.2em; padding:24px 0; margin:8px 0;
+    }
+
+    /* browser mockup */
+    .mockup-browser {
+      border:2px solid var(--border2);
+      box-shadow:6px 6px 0 var(--border2);
+      overflow:hidden;
+      background:#fff;
+    }
+    .mockup-bar {
+      background:var(--bg3); border-bottom:2px solid var(--border2);
+      padding:8px 12px; display:flex; align-items:center; gap:10px;
+    }
+    .mockup-dots { display:flex; gap:5px; }
+    .mockup-dots span { width:9px; height:9px; border-radius:50%; background:var(--border2); display:block; }
+    .mockup-dots span:nth-child(1) { background:#ff5f57; }
+    .mockup-dots span:nth-child(2) { background:#ffbd2e; }
+    .mockup-dots span:nth-child(3) { background:#28ca41; }
+    .mockup-url { font-size:9px; color:var(--muted2); letter-spacing:.04em; }
+    .mockup-screen { overflow:hidden; }
+
+    /* mobile mockup */
+    .mockup-mobile {
+      width:260px; margin:0 auto;
+      border:3px solid #2a2418;
+      border-radius:16px;
+      overflow:hidden;
+      box-shadow:6px 6px 0 #2a2418;
+    }
+    .mockup-mobile-inner {
+      display:flex; flex-direction:column;
+      min-height:400px;
+    }
+
+    @media(max-width:900px){
+      .feature-showcase { grid-template-columns:1fr; }
+      .feature-showcase-flip { direction:ltr; }
+      .mockup-mobile { width:100%; }
+    }
+
+
+    /* ── FUTURE FEATURES ── */
+    #future { border-bottom:2px solid var(--border); }
+
+    .future-grid {
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:12px; align-items:start;
+    }
+
+    .future-card {
+      border:2px solid var(--border);
+      background:var(--bg2);
+      box-shadow:4px 4px 0 var(--border2);
+      padding:24px;
+      transition:all .15s;
+    }
+    .future-card:hover { transform:translate(-1px,-1px); box-shadow:5px 5px 0 var(--border2); }
+
+    .future-hero {
+      border-color:var(--orange-dim);
+      box-shadow:4px 4px 0 var(--orange-dim);
+    }
+    .future-hero:hover { box-shadow:6px 6px 0 var(--orange-dim); }
+
+    .future-card-top {
+      display:flex; justify-content:space-between; align-items:center;
+      margin-bottom:14px;
+    }
+    .future-num {
+      font-family:'Press Start 2P', monospace;
+      font-size:8px; color:var(--orange-dim); letter-spacing:.04em;
+    }
+    .future-status {
+      font-size:8px; padding:3px 8px; letter-spacing:.08em; text-transform:uppercase;
+      border:1px solid var(--orange-dim); color:var(--orange-dim); background:var(--orange-bg);
+    }
+    .future-status-idea {
+      border-color:var(--muted2); color:var(--muted2); background:transparent;
+    }
+
+    .future-icon { font-size:28px; margin-bottom:10px; display:block; }
+    .future-title { font-size:15px; color:var(--ink); font-weight:700; margin-bottom:8px; }
+    .future-desc { font-size:12px; line-height:1.75; color:var(--muted); font-weight:300; margin-bottom:0; }
+
+    /* streak mockup widget */
+    .streak-mockup {
+      margin:20px 0;
+      border:2px solid var(--border2);
+      box-shadow:4px 4px 0 var(--border2);
+      background:var(--bg);
+      padding:20px;
+    }
+    .streak-top { text-align:center; margin-bottom:16px; }
+    .streak-days {
+      display:flex; justify-content:center; gap:6px;
+    }
+    .streak-day {
+      width:32px; height:32px;
+      border:2px solid var(--border2);
+      display:flex; align-items:center; justify-content:center;
+      font-size:9px; color:var(--muted2);
+      background:var(--bg3);
+      font-family:'JetBrains Mono', monospace;
+      font-weight:700;
+    }
+    .streak-day.done {
+      background:var(--orange-bg);
+      border-color:var(--orange-dim);
+      color:var(--orange-dim);
+      box-shadow:2px 2px 0 var(--orange-dim);
+    }
+    .streak-day.today {
+      background:var(--orange);
+      border-color:var(--orange-dim);
+      color:#fff;
+      box-shadow:2px 2px 0 var(--orange-dim);
+    }
+
+    .future-rationale {
+      margin-top:16px; padding:14px;
+      border:1px solid var(--border); background:var(--bg3);
+      font-size:12px; line-height:1.75; color:var(--muted); font-weight:300;
+    }
+    .future-rat-label {
+      font-size:9px; color:var(--muted2); letter-spacing:.08em;
+      margin-bottom:6px; font-family:'JetBrains Mono', monospace;
+    }
+    .future-rationale .hl { color:var(--ink); font-weight:500; }
+
+    .future-col { display:flex; flex-direction:column; gap:12px; }
+    .future-sm { padding:20px; }
+
+    .future-chips { display:flex; gap:6px; flex-wrap:wrap; margin-top:12px; }
+    .future-chip {
+      font-size:9px; padding:3px 8px;
+      border:1px solid var(--border2); color:var(--muted2);
+      background:var(--bg);
+    }
+
+    @media(max-width:768px){
+      .future-grid { grid-template-columns:1fr; }
+    }
+
+    /* ── REVEAL ── */
+    .reveal { opacity:0; transform:translateY(16px); transition:opacity .5s, transform .5s; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+
+    /* pixel divider */
+    .px-divider {
+      text-align:center; padding:16px 48px;
+      font-family:'Press Start 2P',monospace;
+      font-size:8px; color:var(--orange-dim); letter-spacing:.15em;
+      border-top:2px solid var(--border); border-bottom:2px solid var(--border);
+      background:var(--bg3);
+    }
+
+    @media(max-width:768px){
+      nav { padding:12px 20px; }
+      #hero { padding:100px 20px 60px; }
+      section { padding:56px 20px; }
+      .hero-meta { grid-template-columns:1fr 1fr; }
+      .context-grid, .refl-grid, .type-grid { grid-template-columns:1fr; }
+      .features, .insight-row, .comp-showcase { grid-template-columns:1fr; }
+      .proc-step { grid-template-columns:1fr; }
+      .proc-left { border-right:none; border-bottom:2px solid var(--border); }
+      .pixel-deco { display:none; }
+      footer { flex-direction:column; gap:12px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cur"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">pm<span>@portfolio</span></a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-back">← back to work</a>
+    <div class="nav-links">
+      <a href="index.html#about">about</a>
+      <a href="https://docs.google.com/document/d/1_5ZOFH6Epqccre06JSD5by4jwCDYIn5BGyd9KdaQHwY/edit?usp=sharing" target="_blank">resume</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="pixel-deco pd-1">★</div>
+  <div class="pixel-deco pd-2">♥</div>
+  <div class="pixel-deco pd-3">◆</div>
+  <div class="pixel-deco pd-4">✦</div>
+  <div class="pixel-deco pd-5">▲</div>
+
+  <div class="hero-breadcrumb reveal">
+    <a href="index.html">pm@portfolio</a><span class="sep">/</span>work<span class="sep">/</span><span>the-break-room</span>
+  </div>
+
+  <div class="hero-tags reveal">
+    <span class="hero-tag orange">Product Design</span>
+    <span class="hero-tag lav">UX Research</span>
+    <span class="hero-tag sage">Web App</span>
+    <span class="hero-tag">Hackathon</span>
+    <span class="hero-tag">2.5 hrs</span>
+  </div>
+
+  <div class="hero-eyebrow reveal">// PRESS START TO DE-STRESS</div>
+
+  <h1 class="hero-title reveal">THE<br><span class="orange">BREAK</span><br>ROOM</h1>
+
+  <p class="hero-subtitle reveal">
+    A <span class="hl">5-minute stress sanctuary</span> built in a hackathon — track your stress level, smash a button, vent anonymously, or chat with a stranger who gets it.
+  </p>
+
+  <div class="hero-meta reveal">
+    <div class="meta-cell"><div class="meta-lbl">type</div><div class="meta-v orange">Hackathon</div></div>
+    <div class="meta-cell"><div class="meta-lbl">built in</div><div class="meta-v lav">2.5 hrs</div></div>
+    <div class="meta-cell"><div class="meta-lbl">tool</div><div class="meta-v">v0 + Vercel</div></div>
+    <div class="meta-cell"><div class="meta-lbl">status</div><div class="meta-v mint">Live ✓</div></div>
+  </div>
+
+  <a href="https://v0-break-room-app.vercel.app/" target="_blank" class="hero-cta reveal">
+    <span>▶ try the app</span>
+  </a>
+</section>
+
+<!-- CONTEXT -->
+<section id="context">
+  <div class="sec-head reveal">
+    <span class="sec-pixel-label">// 01</span>
+    <span class="sec-title">Context & Inspiration</span>
+    <div class="sec-head-line"></div>
+  </div>
+
+  <div class="context-grid">
+    <div class="reveal">
+      <p class="context-body">At a hackathon with <span class="hl">2.5 hours on the clock</span>, I wanted to build something that solved a real emotional problem — not just a technical one. The idea came from observing people around me: <span class="orange">stress is universal, but the outlets are broken.</span></p>
+      <p class="context-body">Toxic Reddit threads. Corporate wellness apps that feel clinical. Anonymous venting platforms that spiral into negativity. I wanted something that felt <span class="hl">immediate, safe, and a little bit fun</span> — like a stress ball you can't lose.</p>
+      <p class="context-body">A hackathon attendant mentioned <span class="hl">Blind</span> — an anonymous professional network — as a reference point. I took the anonymity idea but stripped away the professional anxiety and replaced it with warmth.</p>
+    </div>
+
+    <div class="reveal">
+      <p style="font-size:10px;color:var(--muted2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;">// existing landscape — what's broken</p>
+      <div class="comp-grid">
+        <div class="comp-card">
+          <div class="comp-name">Reddit <span class="comp-tag">forums</span></div>
+          <p class="comp-issue"><span class="x">✕</span>Venting threads often escalate — people pile on or compete in suffering</p>
+        </div>
+        <div class="comp-card">
+          <div class="comp-name">Blind <span class="comp-tag">anonymous</span></div>
+          <p class="comp-issue"><span class="x">✕</span>Professionally-focused — stress about work IS the content, not the escape</p>
+        </div>
+        <div class="comp-card">
+          <div class="comp-name">Wellness apps <span class="comp-tag">clinical</span></div>
+          <p class="comp-issue"><span class="x">✕</span>Feel like homework — meditation timers and breathing guides add pressure</p>
+        </div>
+        <div class="comp-card">
+          <div class="comp-name">Nothing <span class="comp-tag">default</span></div>
+          <p class="comp-issue"><span class="x">✕</span>Most people just suffer quietly or doom-scroll — no healthy fast outlet</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="px-divider">★ · · · · · · · · · · · · ★ · · · · · · · · · · · · ★</div>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="sec-head reveal">
+    <span class="sec-pixel-label">// 02</span>
+    <span class="sec-title">The Problem Space</span>
+    <div class="sec-head-line"></div>
+  </div>
+
+  <p class="reveal" style="font-size:13px;line-height:1.9;color:var(--muted);max-width:640px;margin-bottom:32px;font-weight:300;">
+    While there was no formal research phase, the design brief came from three observed behavioural patterns that kept showing up in conversations with people around me:
+  </p>
+
+  <div class="insight-row reveal">
+    <div class="insight-card">
+      <span class="insight-icon">🤯</span>
+      <div class="insight-label">Pattern 01</div>
+      <div class="insight-text"><span class="hl">Stress needs an immediate release valve.</span> People don't want to be coached through 10 minutes of breathing — they want to hit something, right now, safely.</div>
+    </div>
+    <div class="insight-card">
+      <span class="insight-icon">🤫</span>
+      <div class="insight-label">Pattern 02</div>
+      <div class="insight-text"><span class="hl">Anonymity enables honesty.</span> Most people can't vent to colleagues or even friends without social consequences. A nameless wall removes that fear.</div>
+    </div>
+    <div class="insight-card">
+      <span class="insight-icon">🫂</span>
+      <div class="insight-label">Pattern 03</div>
+      <div class="insight-text"><span class="hl">Sometimes you just need someone to hear you.</span> Not advice, not therapy — just a real human on the other end saying "yeah, that sucks."</div>
+    </div>
+  </div>
+
+  <div class="px-card reveal" style="margin-top:16px;">
+    <p style="font-size:11px;color:var(--muted2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">// design brief — one sentence</p>
+    <p style="font-size:15px;color:var(--ink);line-height:1.7;font-weight:500;">Build the fastest, warmest, most frictionless stress outlet possible — visualise how you feel, release it physically, say it out loud, or connect with someone. No login, no judgment, no commitment.</p>
+  </div>
+</section>
+
+<div class="px-divider">♥ · · · · · · · · · · · · ♥ · · · · · · · · · · · · ♥</div>
+
+<!-- SOLUTION -->
+<section id="solution">
+  <div class="sec-head reveal">
+    <span class="sec-pixel-label">// 03</span>
+    <span class="sec-title">Features</span>
+    <div class="sec-head-line"></div>
+  </div>
+
+  <p class="reveal" style="font-size:13px;line-height:1.9;color:var(--muted);max-width:640px;margin-bottom:40px;font-weight:300;">
+    Three features, each solving one of the three patterns — and each usable in under 30 seconds with no account required.
+  </p>
+
+  <!-- FEATURE 01 — Frustration Station -->
+  <div class="feature-showcase reveal">
+    <div class="feature-info">
+      <div class="feat-pixel-num" style="color:var(--orange-dim);">FEATURE_01</div>
+      <div class="feat-title">Smash It</div>
+      <p class="feat-desc">A full-screen pink tile with a lightning bolt — "One button. Pure relief." Below it, a pixel stress bar shows your current stress level as a percentage. Press the tile to smash your frustration and watch the bar drop.</p>
+      <div class="feat-details">
+        <div class="feat-detail-row"><span class="fdr-label">UX intent</span><span class="fdr-val">Instant physical release — one tap, no words needed</span></div>
+        <div class="feat-detail-row"><span class="fdr-label">stress bar</span><span class="fdr-val">Pixel progress bar visualises stress level as a % — satisfying to watch it drop</span></div>
+        <div class="feat-detail-row"><span class="fdr-label">naming</span><span class="fdr-val">"Smash It" + lightning bolt ⚡ — aggressive, playful, exactly right</span></div>
+      </div>
+      <span class="feat-badge" style="border-color:var(--orange-dim);color:var(--orange-dim);background:var(--orange-bg);">solves &#8594; stress visualisation + instant release</span>
+    </div>
+    <div class="feature-mockup">
+      <div class="mockup-browser">
+        <div class="mockup-bar">
+          <div class="mockup-dots"><span></span><span></span><span></span></div>
+          <div class="mockup-url">break-room / frustration-station</div>
+        </div>
+        <div class="mockup-screen" style="background:#edeade;padding:20px 18px;font-family:Press Start 2P,monospace;">
+          <!-- logo -->
+          <div style="text-align:center;margin-bottom:4px;font-size:20px;">&#x1F6AA;</div>
+          <div style="font-size:10px;color:#7a8c5a;text-align:center;margin-bottom:2px;">The Break Room</div>
+          <div style="font-size:8px;color:#5a5040;text-align:center;font-family:JetBrains Mono,monospace;margin-bottom:4px;">Welcome, Cactus</div>
+          <div style="font-size:7px;color:#8a8070;text-align:center;font-family:JetBrains Mono,monospace;margin-bottom:14px;">Guest mode -- streaks won't be tracked</div>
+          <!-- stress bar -->
+          <div style="border:2px solid #2a2418;box-shadow:3px 3px 0 #2a2418;background:#f5f2e4;padding:10px 12px;margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+              <div style="font-size:7px;color:#2a2418;">STRESS LEVEL</div>
+              <div style="font-size:7px;color:#2a2418;">67.8% &#x1F629;</div>
+            </div>
+            <div style="border:2px solid #2a2418;background:#ddd8b8;height:18px;overflow:hidden;">
+              <div style="width:68%;height:100%;background:#e8974a;"></div>
+            </div>
+          </div>
+          <!-- feature tiles -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+            <div style="background:#f4e060;border:2px solid #2a2418;box-shadow:3px 3px 0 #2a2418;padding:16px 10px;text-align:center;">
+              <div style="font-size:16px;margin-bottom:6px;">&#x1F4AC;</div>
+              <div style="font-size:7px;color:#2a2418;margin-bottom:3px;">Vent Wall</div>
+              <div style="font-size:7px;color:#5a5040;font-family:JetBrains Mono,monospace;">Post anonymous frustrations</div>
+            </div>
+            <div style="background:#f4a0cc;border:2px solid #2a2418;box-shadow:3px 3px 0 #2a2418;padding:16px 10px;text-align:center;">
+              <div style="font-size:16px;margin-bottom:6px;">&#x26A1;</div>
+              <div style="font-size:7px;color:#2a2418;margin-bottom:3px;">Smash It</div>
+              <div style="font-size:7px;color:#5a5040;font-family:JetBrains Mono,monospace;">One button. Pure relief.</div>
+            </div>
+          </div>
+          <!-- bottom bar -->
+          <div style="border:2px solid #2a2418;box-shadow:3px 3px 0 #2a2418;background:#f5f2e4;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;">
+            <div style="font-size:7px;color:#e8974a;display:flex;align-items:center;gap:3px;">&#x1F525; No Streak</div>
+            <div style="font-size:7px;color:#5a5040;font-family:JetBrains Mono,monospace;">Guest</div>
+            <div style="font-size:7px;color:#5a5040;display:flex;align-items:center;gap:3px;">&#x1F465; 1 Online</div>
+          </div>
+          <div style="font-size:7px;color:#7a8c5a;text-align:center;margin-top:10px;font-family:JetBrains Mono,monospace;text-decoration:underline;">Create an account to track your daily streak</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="feature-divider">&#xB7; &#xB7; &#xB7; &#xB7; &#xB7; &#xB7; &#xB7; &#xB7; &#xB7; &#xB7; &#xB7; &#xB7; &#xB7; &#xB7; &#xB7;</div>
+
+  <!-- FEATURE 02 — Vent Wall -->
+  <div class="feature-showcase feature-showcase-flip reveal">
+    <div class="feature-info">
+      <div class="feat-pixel-num" style="color:var(--lav-dim);">FEATURE_02</div>
+      <div class="feat-title">Vent Wall</div>
+      <p class="feat-desc">Anonymous public posts — 280 characters, auto-cleared every 24 hours. Posts appear as yellow sticky notes with emoji reactions. A "BINGO" button marks when a post resonates — solidarity without replies or arguments.</p>
+      <div class="feat-details">
+        <div class="feat-detail-row"><span class="fdr-label">UX intent</span><span class="fdr-val">Saying it out loud matters — even to strangers</span></div>
+        <div class="feat-detail-row"><span class="fdr-label">ephemerality</span><span class="fdr-val">24h auto-clear keeps the wall fresh, not toxic</span></div>
+        <div class="feat-detail-row"><span class="fdr-label">reactions</span><span class="fdr-val">&#x1F525;&#x1F4AF;&#x1F602; — solidarity without replies or arguments</span></div>
+        <div class="feat-detail-row"><span class="fdr-label">bingo</span><span class="fdr-val">"Same" button — you're not alone in this feeling</span></div>
+      </div>
+      <span class="feat-badge" style="border-color:var(--lav-dim);color:var(--lav-dim);background:var(--lav-bg);">solves &#8594; safe anonymous venting</span>
+    </div>
+    <div class="feature-mockup">
+      <div class="mockup-browser">
+        <div class="mockup-bar">
+          <div class="mockup-dots"><span></span><span></span><span></span></div>
+          <div class="mockup-url">break-room / vent-wall</div>
+        </div>
+        <div class="mockup-screen" style="background:#e8e4d8;padding:18px 16px;font-family:Press Start 2P,monospace;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <div style="width:24px;height:24px;border:2px solid #2a2418;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;">&#8592;</div>
+            <div style="font-size:9px;color:#6a8050;">Vent Wall</div>
+          </div>
+          <div style="font-size:8px;color:#8a8070;font-family:JetBrains Mono,monospace;margin-bottom:10px;">Anonymous frustrations, shared catharsis</div>
+          <div style="font-size:8px;color:#8a8070;font-family:JetBrains Mono,monospace;text-align:center;margin-bottom:10px;">&#9200; Posts auto-clear after 24 hours</div>
+          <div style="border:2px solid #2a2418;box-shadow:4px 4px 0 #2a2418;background:#f5f2e4;padding:10px;margin-bottom:12px;">
+            <div style="background:#ddd8b8;padding:8px 10px;font-size:8px;color:#8a8070;font-family:JetBrains Mono,monospace;min-height:44px;margin-bottom:8px;">What's stressing you out? (Anonymous) &#x1F914;</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:7px;color:#8a8070;font-family:JetBrains Mono,monospace;">280 chars left</div>
+              <div style="display:flex;gap:4px;">
+                <div style="border:2px solid #2a2418;padding:3px 7px;font-size:7px;background:#f5f2e4;">&#x1F3AF; BINGO</div>
+                <div style="border:2px solid #8a8070;padding:3px 7px;font-size:7px;background:#d4d0c4;color:#8a8070;">POST</div>
+              </div>
+            </div>
+          </div>
+          <div style="background:#f4e87a;border:1px solid #c4b84a;box-shadow:3px 3px 0 #c4b84a;padding:12px;position:relative;">
+            <div style="width:9px;height:9px;border-radius:50%;background:#f47068;border:2px solid #c04040;position:absolute;top:-5px;left:50%;transform:translateX(-50%);"></div>
+            <div style="font-size:10px;color:#5a5040;font-family:JetBrains Mono,monospace;line-height:1.6;margin-bottom:8px;">Why do we need a meeting to plan the meeting about meetings?</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div style="display:flex;gap:4px;">
+                <div style="border:1px solid #c4b48a;padding:2px 5px;font-size:9px;background:#fdf8e4;">&#x1F525; 12</div>
+                <div style="border:1px solid #c4b48a;padding:2px 5px;font-size:9px;background:#fdf8e4;">&#x1F4AF; 8</div>
+                <div style="border:1px solid #c4b48a;padding:2px 5px;font-size:9px;background:#fdf8e4;">&#x1F602; 5</div>
+              </div>
+              <div style="font-size:8px;color:#8a8070;font-family:JetBrains Mono,monospace;">2h ago</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="feature-divider">&#xB7; &#xB7; &#xB7; &#xB7; &#xB7; &#xB7; &#xB7; &#xB7; &#xB7; &#xB7; &#xB7; &#xB7; &#xB7; &#xB7; &#xB7;</div>
+
+  <!-- FEATURE 03 — Live Chat -->
+  <div class="feature-showcase reveal">
+    <div class="feature-info">
+      <div class="feat-pixel-num" style="color:var(--sage-dim);">FEATURE_03</div>
+      <div class="feat-title">Live Chat</div>
+      <p class="feat-desc">A completely dark-themed anonymous chat room — the visual contrast from the rest of the app is intentional. You get a random name like "Cactus". A green dot shows who's online. Messages clear every 24 hours. <em>"Say something. No one will ever know."</em></p>
+      <div class="feat-details">
+        <div class="feat-detail-row"><span class="fdr-label">UX intent</span><span class="fdr-val">Dark theme signals "private space" — different rules here</span></div>
+        <div class="feat-detail-row"><span class="fdr-label">identity</span><span class="fdr-val">Auto-assigned random name — no choice, no accountability</span></div>
+        <div class="feat-detail-row"><span class="fdr-label">copywriting</span><span class="fdr-val">"No one will ever know" — sets the tone perfectly</span></div>
+        <div class="feat-detail-row"><span class="fdr-label">ephemerality</span><span class="fdr-val">24h clear — what happens here, stays here</span></div>
+      </div>
+      <span class="feat-badge" style="border-color:var(--sage-dim);color:var(--sage-dim);background:var(--sage-bg);">solves &#8594; real human connection</span>
+    </div>
+    <div class="feature-mockup" style="display:flex;justify-content:center;">
+      <div class="mockup-mobile">
+        <div class="mockup-mobile-inner" style="background:#1a1a1a;font-family:Press Start 2P,monospace;">
+          <div style="padding:12px 14px;border-bottom:1px solid #333;display:flex;justify-content:space-between;align-items:center;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="font-size:8px;color:#fff;letter-spacing:.05em;">LIVE CHAT</div>
+              <div style="display:flex;align-items:center;gap:3px;border:1px solid #333;padding:2px 6px;">
+                <div style="width:6px;height:6px;border-radius:50%;background:#4caf50;"></div>
+                <div style="font-size:7px;color:#aaa;">1</div>
+              </div>
+            </div>
+            <div style="font-size:11px;color:#444;">&#x1F5D1;</div>
+          </div>
+          <div style="padding:6px 14px;border-bottom:1px solid #222;background:#141414;">
+            <div style="font-size:7px;color:#444;font-family:JetBrains Mono,monospace;text-align:center;">&#9200; Messages auto-clear after 24h</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center;min-height:220px;">
+            <div style="font-size:28px;color:#2a2a2a;margin-bottom:14px;">&#x1F4AC;</div>
+            <div style="font-size:8px;color:#888;margin-bottom:10px;">No messages yet</div>
+            <div style="font-size:8px;color:#444;font-family:JetBrains Mono,monospace;line-height:1.8;">Say something.<br>No one will<br>ever know.</div>
+          </div>
+          <div style="padding:10px 12px;border-top:1px solid #222;background:#111;">
+            <div style="border:1px solid #2a2a2a;padding:9px 11px;display:flex;justify-content:space-between;align-items:center;background:#1a1a1a;margin-bottom:6px;">
+              <div style="font-size:9px;color:#333;font-family:JetBrains Mono,monospace;">Send a message</div>
+              <div style="font-size:10px;color:#333;">&#x27A4;</div>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <div style="font-size:7px;color:#333;font-family:JetBrains Mono,monospace;">Chatting as Cactus</div>
+              <div style="font-size:7px;color:#333;font-family:JetBrains Mono,monospace;">0/280</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="px-divider">◆ · · · · · · · · · · · · ◆ · · · · · · · · · · · · ◆</div>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="sec-head reveal">
+    <span class="sec-pixel-label">// 04</span>
+    <span class="sec-title">Design Process — 2.5 Hours</span>
+    <div class="sec-head-line"></div>
+  </div>
+
+  <div class="process-steps reveal">
+    <div class="proc-step">
+      <div class="proc-left">
+        <div class="proc-num">STEP_01</div>
+        <div class="proc-time">0:00 – 0:20</div>
+        <div class="proc-phase">define</div>
+      </div>
+      <div class="proc-right">
+        <div class="proc-title">Brief & Concept</div>
+        <p class="proc-body">Defined the problem space from observed behaviour rather than formal research. Decided on the core constraint: <span class="hl">zero friction, zero login, immediate value</span>. Named it "The Break Room" — a place you go to decompress, not to perform wellness.</p>
+        <div class="proc-chips">
+          <span class="proc-chip">problem framing</span>
+          <span class="proc-chip">naming</span>
+          <span class="proc-chip">constraints</span>
+        </div>
+      </div>
+    </div>
+    <div class="proc-step">
+      <div class="proc-left">
+        <div class="proc-num">STEP_02</div>
+        <div class="proc-time">0:20 – 0:45</div>
+        <div class="proc-phase">design intent</div>
+      </div>
+      <div class="proc-right">
+        <div class="proc-title">Aesthetic Direction</div>
+        <p class="proc-body">Chose <span class="orange">pixel art + pastel</span> deliberately — it's playful and nostalgic, which creates emotional distance from the stress itself. The visual language says "this is a safe, light space" without using corporate wellness clichés like gradients and sans-serif headers.</p>
+        <div class="proc-chips">
+          <span class="proc-chip">pixel art</span>
+          <span class="proc-chip">pastel palette</span>
+          <span class="proc-chip">emotional tone</span>
+          <span class="proc-chip">anti-clinical</span>
+        </div>
+      </div>
+    </div>
+    <div class="proc-step">
+      <div class="proc-left">
+        <div class="proc-num">STEP_03</div>
+        <div class="proc-time">0:45 – 2:30</div>
+        <div class="proc-phase">build</div>
+      </div>
+      <div class="proc-right">
+        <div class="proc-title">Build on v0</div>
+        <p class="proc-body">Used <span class="hl">v0 by Vercel</span> to generate and iterate on the UI through prompting. Focused engineering effort on the <span class="orange">live chat feature</span> — the most technically complex piece — then built the stress level bar, the Smash It tile, and the vent wall. The home dashboard with its status bar came last. Deployed directly to Vercel.</p>
+        <div class="proc-chips">
+          <span class="proc-chip">v0 prompting</span>
+          <span class="proc-chip">real-time chat</span>
+          <span class="proc-chip">vercel deploy</span>
+          <span class="proc-chip">rapid iteration</span>
+        </div>
+      </div>
+    </div>
+    <div class="proc-step">
+      <div class="proc-left">
+        <div class="proc-num">STEP_04</div>
+        <div class="proc-time">2:30</div>
+        <div class="proc-phase">ship</div>
+      </div>
+      <div class="proc-right">
+        <div class="proc-title">Live & Presented</div>
+        <p class="proc-body">Shipped a <span class="hl">fully functional live app</span> within the hackathon time limit. The core user journey — land → feel something → leave feeling slightly better — worked end to end. Zero accounts, zero onboarding, immediate access.</p>
+        <div class="proc-chips">
+          <span class="proc-chip">shipped ✓</span>
+          <span class="proc-chip">fully functional</span>
+          <span class="proc-chip">live URL</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="px-divider">✦ · · · · · · · · · · · · ✦ · · · · · · · · · · · · ✦</div>
+
+<!-- DESIGN SYSTEM -->
+<section id="design-system">
+  <div class="sec-head reveal">
+    <span class="sec-pixel-label">// 05</span>
+    <span class="sec-title">Design System</span>
+    <div class="sec-head-line"></div>
+  </div>
+
+  <!-- COLOURS -->
+  <div class="ds-section-title reveal">01 / COLOUR PALETTE</div>
+  <div class="swatches reveal">
+    <div class="swatch">
+      <div class="swatch-block" style="background:#e8974a;box-shadow:4px 4px 0 #c47830;"></div>
+      <div class="swatch-name" style="color:#e8974a;">Door Orange</div>
+      <div class="swatch-hex">#E8974A</div>
+      <div class="swatch-use">PRIMARY — logo · CTAs · stress button</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:#7a8c5a;box-shadow:4px 4px 0 #5c6e40;"></div>
+      <div class="swatch-name" style="color:#7a8c5a;">Pixel Sage</div>
+      <div class="swatch-hex">#7A8C5A</div>
+      <div class="swatch-use">PRIMARY — logotype · headings · success states</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:#f4b878;box-shadow:4px 4px 0 #e8974a;"></div>
+      <div class="swatch-name">Light Orange</div>
+      <div class="swatch-hex">#F4B878</div>
+      <div class="swatch-use">Icon fills · tints · hover states</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:#a89ec8;box-shadow:4px 4px 0 #8878b0;"></div>
+      <div class="swatch-name">Muted Lavender</div>
+      <div class="swatch-hex">#A89EC8</div>
+      <div class="swatch-use">Vent wall · secondary accent</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:#78b898;box-shadow:4px 4px 0 #549878;"></div>
+      <div class="swatch-name">Soft Teal</div>
+      <div class="swatch-hex">#78B898</div>
+      <div class="swatch-use">Live chat · supportive accent</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:#edeade;box-shadow:4px 4px 0 #d4ccb4;"></div>
+      <div class="swatch-name">Warm Cream</div>
+      <div class="swatch-hex">#EDEADE</div>
+      <div class="swatch-use">Page background — from the actual app</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:#2a2418;box-shadow:4px 4px 0 #b8ae94;"></div>
+      <div class="swatch-name">Warm Ink</div>
+      <div class="swatch-hex">#2A2418</div>
+      <div class="swatch-use">Body text · headings · dark UI</div>
+    </div>
+  </div>
+
+  <!-- TYPOGRAPHY -->
+  <div class="ds-section-title reveal">02 / TYPOGRAPHY</div>
+  <div class="type-grid reveal">
+    <div class="type-specimen">
+      <div class="type-label">Display — Press Start 2P</div>
+      <div class="type-sample-pixel" style="font-size:20px;color:var(--orange);margin-bottom:8px;">BREAK<br>ROOM</div>
+      <div class="type-sample-pixel" style="font-size:14px;color:var(--ink);margin-bottom:8px;">FEATURE_01</div>
+      <div class="type-sample-pixel" style="font-size:10px;color:var(--muted);">// press start to play</div>
+      <div class="type-meta">Use for: headings · labels · pixel UI elements · section numbers</div>
+    </div>
+    <div class="type-specimen">
+      <div class="type-label">Body — JetBrains Mono</div>
+      <div class="type-sample-mono" style="font-size:16px;color:var(--ink);margin-bottom:8px;font-weight:700;">Stressed? Same.</div>
+      <div class="type-sample-mono" style="font-size:13px;color:var(--muted);margin-bottom:8px;font-weight:300;">A safe space to vent, smash a button, or just talk to a stranger who gets it.</div>
+      <div class="type-sample-mono" style="font-size:11px;color:var(--muted2);">// anonymous · no login · 5 minutes</div>
+      <div class="type-meta">Use for: body copy · descriptions · captions · UI labels</div>
+    </div>
+    <div class="type-specimen">
+      <div class="type-label">Scale — Pixel Display</div>
+      <div class="type-sample-pixel" style="font-size:24px;color:var(--ink);margin-bottom:4px;">H1 / 24px</div>
+      <div class="type-sample-pixel" style="font-size:14px;color:var(--ink);margin-bottom:4px;">H2 / 14px</div>
+      <div class="type-sample-pixel" style="font-size:10px;color:var(--ink);margin-bottom:4px;">H3 / 10px</div>
+      <div class="type-sample-pixel" style="font-size:8px;color:var(--ink);">label / 8px</div>
+      <div class="type-meta">Pixel font — only 4 sizes. Keep it disciplined.</div>
+    </div>
+    <div class="type-specimen">
+      <div class="type-label">Scale — Body Mono</div>
+      <div class="type-sample-mono" style="font-size:16px;font-weight:700;color:var(--ink);margin-bottom:4px;">Large / 16px bold</div>
+      <div class="type-sample-mono" style="font-size:13px;color:var(--ink);margin-bottom:4px;">Body / 13px regular</div>
+      <div class="type-sample-mono" style="font-size:12px;font-weight:300;color:var(--muted);margin-bottom:4px;">Small / 12px light</div>
+      <div class="type-sample-mono" style="font-size:10px;color:var(--muted2);">Caption / 10px muted</div>
+      <div class="type-meta">Weight: 700 headings · 400 body · 300 captions</div>
+    </div>
+  </div>
+
+  <!-- COMPONENTS -->
+  <div class="ds-section-title reveal">03 / COMPONENTS</div>
+  <div class="comp-showcase reveal">
+    <div class="comp-demo">
+      <div class="comp-demo-label">Buttons</div>
+      <div class="demo-btn primary">Primary Action</div>
+      <div class="demo-btn secondary">Secondary</div>
+      <div class="demo-btn ghost">Ghost / Tertiary</div>
+      <p style="font-size:9px;color:var(--muted2);margin-top:10px;">All buttons use 2px solid border + pixel drop shadow. Active state: shadow collapses, element shifts +2px down.</p>
+    </div>
+
+    <div class="comp-demo">
+      <div class="comp-demo-label">Input Fields</div>
+      <input class="demo-input" placeholder="What's on your mind..." readonly>
+      <input class="demo-input" placeholder="Say something..." readonly style="border-color:var(--orange);box-shadow:3px 3px 0 var(--orange);">
+      <p style="font-size:9px;color:var(--muted2);margin-top:6px;">Default: warm border. Focus: pink border + shadow. No rounded corners — keeps the pixel aesthetic.</p>
+    </div>
+    <div class="comp-demo">
+      <div class="comp-demo-label">Vent Post Card</div>
+      <div class="demo-post">
+        <div class="demo-post-meta">anonymous · just now</div>
+        I have a presentation in 20 minutes and my laptop just died. HELP.
+      </div>
+      <div class="demo-post">
+        <div class="demo-post-meta">anonymous · 3 min ago</div>
+        My manager replied all with a typo. I can't stop laughing.
+      </div>
+    </div>
+    <div class="comp-demo">
+      <div class="comp-demo-label">Pixel Cards</div>
+      <div style="border:2px solid var(--orange);box-shadow:4px 4px 0 var(--orange);padding:14px;margin-bottom:8px;background:var(--orange-bg);">
+        <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--orange);margin-bottom:6px;">CARD VARIANT A</div>
+        <div style="font-size:11px;color:var(--muted);">Coloured border + shadow match the feature colour.</div>
+      </div>
+      <div style="border:2px solid var(--border2);box-shadow:4px 4px 0 var(--border2);padding:14px;background:var(--bg2);">
+        <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--muted2);margin-bottom:6px;">CARD VARIANT B</div>
+        <div style="font-size:11px;color:var(--muted);">Neutral border for general content containers.</div>
+      </div>
+    </div>
+    <div class="comp-demo">
+      <div class="comp-demo-label">Stress Level Bar</div>
+      <div style="border:2px solid var(--border2);box-shadow:3px 3px 0 var(--border2);background:var(--bg2);padding:12px;margin-bottom:8px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+          <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:var(--ink);">STRESS LEVEL</div>
+          <div style="font-size:9px;color:var(--ink);">67.8% &#x1F629;</div>
+        </div>
+        <div style="border:2px solid var(--ink);background:var(--bg3);height:20px;overflow:hidden;">
+          <div style="width:68%;height:100%;background:var(--orange);"></div>
+        </div>
+      </div>
+      <div style="border:2px solid var(--border2);box-shadow:3px 3px 0 var(--border2);background:var(--bg2);padding:12px;margin-bottom:8px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+          <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:var(--ink);">STRESS LEVEL</div>
+          <div style="font-size:9px;color:var(--sage);">22.0% &#x1F60C;</div>
+        </div>
+        <div style="border:2px solid var(--ink);background:var(--bg3);height:20px;overflow:hidden;">
+          <div style="width:22%;height:100%;background:var(--sage);"></div>
+        </div>
+      </div>
+      <p style="font-size:9px;color:var(--muted2);">No border-radius — hard pixel edges only. Colour shifts orange&#8594;sage as stress drops.</p>
+    </div>
+    <div class="comp-demo">
+      <div class="comp-demo-label">Feature Tiles</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+        <div style="background:#f4e060;border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:14px 10px;text-align:center;">
+          <div style="font-size:18px;margin-bottom:6px;">&#x1F4AC;</div>
+          <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:var(--ink);margin-bottom:4px;">Vent Wall</div>
+          <div style="font-size:9px;color:#5a5040;">Post anonymous frustrations</div>
+        </div>
+        <div style="background:#f4a0cc;border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:14px 10px;text-align:center;">
+          <div style="font-size:18px;margin-bottom:6px;">&#x26A1;</div>
+          <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:var(--ink);margin-bottom:4px;">Smash It</div>
+          <div style="font-size:9px;color:#5a5040;">One button. Pure relief.</div>
+        </div>
+      </div>
+      <p style="font-size:9px;color:var(--muted2);">Full-colour tiles — yellow for expression, pink for release. Dark ink border + shadow on everything.</p>
+    </div>
+    <div class="comp-demo">
+      <div class="comp-demo-label">Status Bar</div>
+      <div style="border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);background:var(--bg2);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div style="font-size:9px;color:var(--orange);display:flex;align-items:center;gap:5px;">&#x1F525; <span style="font-family:'Press Start 2P',monospace;font-size:7px;">No Streak</span></div>
+        <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:var(--muted);">Guest</div>
+        <div style="font-size:9px;color:var(--muted);display:flex;align-items:center;gap:4px;">&#x1F465; 1 Online</div>
+      </div>
+      <p style="font-size:9px;color:var(--muted2);">Persistent footer strip. Always visible — streak status, anonymous identity, live user count. Updates in real time.</p>
+    </div>
+    <div class="comp-demo">
+      <div class="comp-demo-label">Spacing System</div>
+      <div class="spacing-row" style="margin-bottom:12px;">
+        <div class="spacing-item"><div class="spacing-block" style="height:4px;"></div><div class="spacing-label">4px</div><div class="spacing-value">xs</div></div>
+        <div class="spacing-item"><div class="spacing-block" style="height:8px;"></div><div class="spacing-label">8px</div><div class="spacing-value">sm</div></div>
+        <div class="spacing-item"><div class="spacing-block" style="height:12px;"></div><div class="spacing-label">12px</div><div class="spacing-value">md</div></div>
+        <div class="spacing-item"><div class="spacing-block" style="height:16px;"></div><div class="spacing-label">16px</div><div class="spacing-value">lg</div></div>
+        <div class="spacing-item"><div class="spacing-block" style="height:24px;"></div><div class="spacing-label">24px</div><div class="spacing-value">xl</div></div>
+        <div class="spacing-item"><div class="spacing-block" style="height:32px;"></div><div class="spacing-label">32px</div><div class="spacing-value">2xl</div></div>
+        <div class="spacing-item"><div class="spacing-block" style="height:48px;"></div><div class="spacing-label">48px</div><div class="spacing-value">3xl</div></div>
+      </div>
+      <p style="font-size:9px;color:var(--muted2);">4px base unit · pixel grid — all spacing is a multiple of 4.</p>
+    </div>
+  </div>
+
+  <!-- PIXEL SHADOW RULE -->
+  <div class="ds-section-title reveal">04 / PIXEL SHADOW RULE</div>
+  <div class="px-card reveal">
+    <p style="font-size:12px;color:var(--muted);line-height:1.8;margin-bottom:16px;">Every interactive element uses a flat drop shadow offset at <strong style="color:var(--ink)">3px or 4px</strong> — no blur radius. This is the signature pixel art effect that unifies the whole UI. Shadow colour always matches the element's border colour, darkened one step.</p>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;">
+      <div style="text-align:center;">
+        <div style="width:80px;height:40px;background:var(--orange-lt);border:2px solid var(--orange);box-shadow:4px 4px 0 var(--orange);margin:0 auto 8px;"></div>
+        <div style="font-size:9px;color:var(--muted);">Pink element</div>
+        <div style="font-size:9px;color:var(--orange);">shadow: var(--orange-dim)</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="width:80px;height:40px;background:var(--lavender);border:2px solid var(--lav-dim);box-shadow:4px 4px 0 var(--lav-dim);margin:0 auto 8px;"></div>
+        <div style="font-size:9px;color:var(--muted);">Lavender element</div>
+        <div style="font-size:9px;color:var(--lav-dim);">shadow: #9b89d4</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="width:80px;height:40px;background:var(--mint);border:2px solid var(--mint-dim);box-shadow:4px 4px 0 var(--sage-dim);margin:0 auto 8px;"></div>
+        <div style="font-size:9px;color:var(--muted);">Mint element</div>
+        <div style="font-size:9px;color:var(--sage);">shadow: #5bbfa0</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="width:80px;height:40px;background:var(--bg2);border:2px solid var(--border2);box-shadow:4px 4px 0 var(--border2);margin:0 auto 8px;"></div>
+        <div style="font-size:9px;color:var(--muted);">Neutral element</div>
+        <div style="font-size:9px;color:var(--muted2);">shadow: #d4bfa0</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="px-divider">&#x2665; · · · · · · · · · · · · &#x2665; · · · · · · · · · · · · &#x2665;</div>
+
+<!-- FUTURE FEATURES -->
+<section id="future">
+  <div class="sec-head reveal">
+    <span class="sec-pixel-label">// 06</span>
+    <span class="sec-title">Future Features</span>
+    <div class="sec-head-line"></div>
+  </div>
+
+  <p class="reveal" style="font-size:13px;line-height:1.9;color:var(--muted);max-width:640px;margin-bottom:36px;font-weight:300;">
+    The hackathon was just the beginning. With a registered user layer, these features would turn Break Room from a one-time release valve into a daily wellbeing habit.
+  </p>
+
+  <div class="future-grid reveal">
+
+    <!-- Streak System — hero card -->
+    <div class="future-card future-hero">
+      <div class="future-card-top">
+        <div class="future-num">NEXT_01</div>
+        <div class="future-status">planned</div>
+      </div>
+      <div class="future-icon">&#x1F525;</div>
+      <div class="future-title">Daily Streak System</div>
+      <p class="future-desc">Reward users who return to decompress every day. A streak counter — like Duolingo but for your mental health — turns a one-time visit into a daily check-in habit.</p>
+
+      <!-- streak mockup -->
+      <div class="streak-mockup">
+        <div class="streak-top">
+          <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--orange);">YOUR STREAK</div>
+          <div style="font-family:'Press Start 2P',monospace;font-size:22px;color:var(--orange);line-height:1.2;">7&#x1F525;</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:4px;">days in a row</div>
+        </div>
+        <div class="streak-days">
+          <div class="streak-day done">M</div>
+          <div class="streak-day done">T</div>
+          <div class="streak-day done">W</div>
+          <div class="streak-day done">T</div>
+          <div class="streak-day done">F</div>
+          <div class="streak-day done">S</div>
+          <div class="streak-day today">S</div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:10px;font-style:italic;">"Come back tomorrow to keep your streak!"</div>
+      </div>
+
+      <div class="future-rationale">
+        <div class="future-rat-label">// why this matters</div>
+        <p>Stress doesn't take days off. A streak system creates a <span class="hl">gentle daily ritual</span> — just like checking your phone, but for your head. Keeps users returning without guilt or pressure.</p>
+      </div>
+    </div>
+
+    <!-- Right column — smaller future cards -->
+    <div class="future-col">
+      <div class="future-card future-sm">
+        <div class="future-card-top">
+          <div class="future-num">NEXT_02</div>
+          <div class="future-status future-status-idea">idea</div>
+        </div>
+        <div class="future-title" style="font-size:13px;">Streak Badges & Milestones</div>
+        <p class="future-desc">Unlock pixel art badges at 7, 30, 100 day streaks. Ties into the game aesthetic — your self-care has achievements now.</p>
+        <div class="future-chips">
+          <span class="future-chip">gamification</span>
+          <span class="future-chip">retention</span>
+        </div>
+      </div>
+
+      <div class="future-card future-sm">
+        <div class="future-card-top">
+          <div class="future-num">NEXT_03</div>
+          <div class="future-status future-status-idea">idea</div>
+        </div>
+        <div class="future-title" style="font-size:13px;">Personal Vent History</div>
+        <p class="future-desc">Registered users can see their own past vents — private, not public. Journaling without the pressure of journaling.</p>
+        <div class="future-chips">
+          <span class="future-chip">accounts</span>
+          <span class="future-chip">privacy</span>
+        </div>
+      </div>
+
+      <div class="future-card future-sm">
+        <div class="future-card-top">
+          <div class="future-num">NEXT_04</div>
+          <div class="future-status future-status-idea">idea</div>
+        </div>
+        <div class="future-title" style="font-size:13px;">Streak Freeze</div>
+        <p class="future-desc">Miss a day? Use a freeze to protect your streak. Reduces anxiety about the streak itself — because the app is supposed to reduce stress, not add it.</p>
+        <div class="future-chips">
+          <span class="future-chip">forgiveness UX</span>
+          <span class="future-chip">wellbeing</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="px-divider">▲ · · · · · · · · · · · · ▲ · · · · · · · · · · · · ▲</div>
+
+<!-- REFLECTION -->
+<section id="reflection">
+  <div class="sec-head reveal">
+    <span class="sec-pixel-label">// 07</span>
+    <span class="sec-title">Reflection</span>
+    <div class="sec-head-line"></div>
+  </div>
+
+  <div class="refl-grid reveal">
+    <div class="refl-card good">
+      <div class="refl-head">// WHAT WORKED</div>
+      <div class="refl-item"><span class="refl-bullet">+</span><span><span class="hl">Zero-friction access</span> — no login, no onboarding. Users could be using it within 5 seconds of landing.</span></div>
+      <div class="refl-item"><span class="refl-bullet">+</span><span>The <span class="hl">pixel art aesthetic</span> created instant emotional distance from the stress — it felt like a game, not a therapy app.</span></div>
+      <div class="refl-item"><span class="refl-bullet">+</span><span>Shipping a <span class="hl">fully functional live app</span> in 2.5 hours proved that v0 + clear design intent = real product, fast.</span></div>
+      <div class="refl-item"><span class="refl-bullet">+</span><span>Three features, one clear emotional arc: <span class="hl">release → express → connect</span>. Each one escalates intimacy at the user's pace.</span></div>
+    </div>
+    <div class="refl-card warn">
+      <div class="refl-head">// NEXT TIME</div>
+      <div class="refl-item"><span class="refl-bullet">!</span><span>The vent wall needs <span class="hl">moderation or tone guardrails</span> — anonymous public walls can turn dark without them.</span></div>
+      <div class="refl-item"><span class="refl-bullet">!</span><span>Live chat with strangers raises <span class="hl">safety questions</span> I didn't fully resolve in the hackathon timeline.</span></div>
+      <div class="refl-item"><span class="refl-bullet">!</span><span>Would love to run <span class="hl">usability testing</span> — especially around whether the stress button actually feels cathartic, or just silly.</span></div>
+      <div class="refl-item"><span class="refl-bullet">!</span><span>No <span class="hl">accessibility</span> consideration for the pixel font at small sizes — it can be hard to read for some users.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-pixel-art reveal">
+★ ★ ★ ★ ★ ★ ★ ★ ★ ★
+★                 ★
+★  THANKS FOR     ★
+★  VISITING  :)  ★
+★                 ★
+★ ★ ★ ★ ★ ★ ★ ★ ★ ★</div>
+  <h2 class="contact-title reveal">want to work<br><span>together?</span></h2>
+  <p class="contact-sub reveal">// open to opportunities · collaborations · conversations</p>
+  <a href="mailto:ppw_p@hotmail.com" class="contact-email reveal">ppw_p@hotmail.com →</a>
+</section>
+
+<footer>
+  <div>
+    <span style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--orange);">pm</span>
+    <span style="color:var(--muted2);"> · the break room case study</span>
+  </div>
+  <div class="foot-links">
+    <a href="https://www.behance.net/pornpawee-manyuen" target="_blank">behance</a>
+    <a href="https://www.instagram.com/thereandthese/" target="_blank">instagram</a>
+    <a href="https://www.linkedin.com/in/pornpawee-manyuen/" target="_blank">linkedin</a>
+    <a href="index.html">← portfolio</a>
+  </div>
+</footer>
+
+<script>
+var cur = document.getElementById('cur');
+document.addEventListener('mousemove', function(e){
+  cur.style.left = e.clientX + 'px';
+  cur.style.top  = e.clientY + 'px';
+});
+
+var obs = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: .08 });
+document.querySelectorAll('.reveal').forEach(function(el){ obs.observe(el); });
+</script>
+</body>
+</html>
