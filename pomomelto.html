@@ -651,6 +651,124 @@ footer { background:var(--ink); padding:80px 64px 48px 220px; color:var(--bg); }
         <p class="insight-body">Users wanted forgiveness UX — the feeling that effort accumulates, not just a number ticking.</p>
       </div>
     </div>
+
+  <div class="gtd">
+     <style>
+      .gtd { margin-top: 56px; }
+      .gtd__rows { border-top: 1px solid var(--line); margin-top: 24px; }
+      .gtd__row {
+      display: grid;
+      grid-template-columns: 1fr auto 1.2fr;
+      gap: 32px;
+      align-items: start;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--line);
+      }
+     .gtd__gap-no {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--sage-dk);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+     }
+     .gtd__stamp {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--sage-bg);
+      border: 1.5px solid var(--sage);
+      flex: none;
+     }
+     .gtd__gap-name {
+      font-family: var(--serif);
+      font-size: 18px;
+      line-height: 1.2;
+      color: var(--ink);
+     }
+     .gtd__arrow {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 24px;
+      color: var(--sage-bg);
+      line-height: 1;
+      padding-top: 4px;
+     }
+     .gtd__fix-lead {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 22px;
+      line-height: 1.2;
+      color: var(--sage-dk);
+      display: block;
+      margin-bottom: 8px;
+     }
+     .gtd__fix-body {
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--muted);
+     }
+     @media (max-width: 640px) {
+      .gtd__row { grid-template-columns: 1fr; gap: 10px; }
+      .gtd__arrow { display: none; }
+     }
+    </style>
+
+   <div class="section-label" style="margin-bottom:8px;">From gaps to decisions</div>
+   <p class="body-text" style="max-width:580px;">Two moves did most of the work: the loyalty loop and choosing a drink. Between them, they close all four gaps.</p>
+
+    <div class="gtd__rows">
+     <div class="gtd__row">
+       <div>
+         <div class="gtd__gap-no"><span class="gtd__stamp"></span>Gap 01 · No warm reward</div>
+         <div class="gtd__gap-name">Streaks punish a missed day.</div>
+       </div>
+      <div class="gtd__arrow">→</div>
+      <div>
+        <span class="gtd__fix-lead">A café loyalty card.</span>
+        <span class="gtd__fix-body">Finish a session, earn a stamp; ten stamps, a free drink. The reward is cumulative, not a streak that resets.</span>
+      </div>
+      </div>
+
+      <div class="gtd__row">
+       <div>
+       <div class="gtd__gap-no"><span class="gtd__stamp"></span>Gap 04 · Harsh resets</div>
+        <div class="gtd__gap-name">Progress wipes when you slip.</div>
+       </div>
+      <div class="gtd__arrow">→</div>
+      <div>
+        <span class="gtd__fix-lead">The same card.</span>
+        <span class="gtd__fix-body">Stamps stay put whether you focus daily or weekly, so effort accumulates instead of being wiped.</span>
+      </div>
+    </div>
+
+    <div class="gtd__row">
+      <div>
+        <div class="gtd__gap-no"><span class="gtd__stamp"></span>Gap 02 · Locked personalisation</div>
+        <div class="gtd__gap-name">Aesthetics sit behind a paywall.</div>
+      </div>
+      <div class="gtd__arrow">→</div>
+      <div>
+        <span class="gtd__fix-lead">Choose your drink each session.</span>
+        <span class="gtd__fix-body">Free, and the whole point, not an upsell.</span>
+      </div>
+    </div>
+
+    <div class="gtd__row">
+      <div>
+        <div class="gtd__gap-no"><span class="gtd__stamp"></span>Gap 03 · Sterile sessions</div>
+        <div class="gtd__gap-name">A countdown with no feeling.</div>
+      </div>
+      <div class="gtd__arrow">→</div>
+      <div>
+        <span class="gtd__fix-lead">Drink, palette, shape.</span>
+        <span class="gtd__fix-body">Your chosen drink, a muted sage palette and soft organic shapes turn a countdown into something closer to sitting down with a coffee.</span>
+      </div>
+    </div>
+  </div>
+</div>
   </section>
 
   <!-- 02 Concept -->
